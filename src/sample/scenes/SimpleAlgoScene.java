@@ -31,42 +31,10 @@ public class SimpleAlgoScene {
 
         Text errorList = new Text();
 
-        Button go = new Button("GO!");
+        Button go = setButtonGo(vars, errorList);
 
         GridPane root = setLayout(banner, varBanners, vars, errorList, go);
 
-        go.setOnAction(event -> {
-            try {
-                Double[] variable = new Double[3];
-                for (int i = 0; i < vars.length; i++) {
-                    if(vars[i].getText() == null || vars[i].getText().length() == 0)
-                        throw new InvalidInputException("Empty field(s)!");
-                    variable[i] = Double.parseDouble(vars[i].getText());
-                }
-
-                double y = SimpleAlgo.calculate(variable[0], variable[1], variable[2]);
-
-                errorList.setText("");
-
-                for (int i = 0; i < vars.length; i++) {
-                    vars[i].setStyle("-fx-background-color: transparent");
-                }
-
-                Stage modal = new Stage();
-
-                modal.setScene(setModalScene(y, 10));
-
-                modal.showAndWait();
-            } catch (InvalidInputException e){
-                errorList.setText(e.getMessage());
-
-                errorList.setStyle("-fx-font-color: red"); // doesn't work! TODO
-
-                for (int i = 0; i < vars.length; i++) {
-                    vars[i].setStyle("-fx-background-color: red");
-                }
-            }
-        });
 
         return new Scene(root, 500, 300);
     }
@@ -112,7 +80,7 @@ public class SimpleAlgoScene {
 
     private static void setListener(TextField var){
         var.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*")) var.setText(newValue.replaceAll("[^\\d]", ""));
+            if(!newValue.matches("\\d*|\\.")) var.setText(newValue.replaceAll("[^\\d^.]", ""));
         });
     }
 
@@ -128,5 +96,44 @@ public class SimpleAlgoScene {
         root.setAlignment(Pos.CENTER);
 
         return new Scene(root, 300, 200);
+    }
+
+    private static Button setButtonGo(TextField[] vars, Text errorList){
+        Button go = new Button("GO!");
+
+        go.setOnAction(event -> {
+            try {
+                Double[] variable = new Double[3];
+                for (int i = 0; i < vars.length; i++) {
+                    if(vars[i].getText() == null || vars[i].getText().length() == 0)
+                        throw new InvalidInputException("Empty field(s)!");
+                    variable[i] = Double.parseDouble(vars[i].getText());
+                }
+
+                double y = SimpleAlgo.calculate(variable[0], variable[1], variable[2]);
+
+                errorList.setText("");
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: transparent");
+                }
+
+                Stage modal = new Stage();
+
+                modal.setScene(setModalScene(y, 10));
+
+                modal.showAndWait();
+            } catch (InvalidInputException | NumberFormatException e){
+                errorList.setText(e.getMessage());
+
+                errorList.setStyle("-fx-font-color: red"); // doesn't work! TODO
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: red");
+                }
+            }
+        });
+
+        return go;
     }
 }

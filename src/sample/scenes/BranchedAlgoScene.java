@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -41,50 +40,9 @@ public class BranchedAlgoScene {
 
         Text errorList = new Text();
 
-        Button go = new Button("GO!");
+        Button go = setButtonGo(vars, varI, errorList);
 
         GridPane root = setLayout(banner, varBanners, vars, varI, errorList, go);
-
-        go.setOnAction(event -> {
-            try {
-                Double[] variable = new Double[vars.length];
-                for (int i = 0; i < vars.length; i++) {
-                    if(vars[i].getText() == null || vars[i].getText().length() == 0)
-                        throw new InvalidInputException("Empty field(s)!");
-                    variable[i] = Double.parseDouble(vars[i].getText());
-                }
-
-                int variableI;
-
-                variableI = Integer.parseInt(varI.getText());
-
-                double y = BranchedAlgo.calculate(variable[0], variable[1], variableI);
-
-                errorList.setText("");
-
-                for (int i = 0; i < vars.length; i++) {
-                    vars[i].setStyle("-fx-background-color: transparent");
-                }
-
-                varI.setStyle("-fx-background-color: transparent");
-
-                Stage modal = new Stage();
-
-                modal.setScene(setModalScene(y, BranchedAlgo.operations));
-
-                modal.showAndWait();
-            } catch (InvalidInputException e){
-                errorList.setText(e.getMessage());
-
-                errorList.setStyle("-fx-font-color: red"); // doesn't work! TODO
-
-                for (int i = 0; i < vars.length; i++) {
-                    vars[i].setStyle("-fx-background-color: red");
-                }
-
-                varI.setStyle("-fx-background-color: red");
-            }
-        });
 
         return new Scene(root, 500, 300);
     }
@@ -149,5 +107,52 @@ public class BranchedAlgoScene {
         root.setAlignment(Pos.CENTER);
 
         return new Scene(root, 300, 200);
+    }
+
+    private static Button setButtonGo(TextField[] vars, TextField varI, Text errorList){
+        Button go = new Button("GO!");
+
+        go.setOnAction(event -> {
+            try {
+                Double[] variable = new Double[vars.length];
+                for (int i = 0; i < vars.length; i++) {
+                    if(vars[i].getText() == null || vars[i].getText().length() == 0)
+                        throw new InvalidInputException("Empty field(s)!");
+                    variable[i] = Double.parseDouble(vars[i].getText());
+                }
+
+                int variableI;
+
+                variableI = Integer.parseInt(varI.getText());
+
+                double y = BranchedAlgo.calculate(variable[0], variable[1], variableI);
+
+                errorList.setText("");
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: transparent");
+                }
+
+                varI.setStyle("-fx-background-color: transparent");
+
+                Stage modal = new Stage();
+
+                modal.setScene(setModalScene(y, BranchedAlgo.operations));
+
+                modal.showAndWait();
+            } catch (InvalidInputException | NumberFormatException e){
+                errorList.setText(e.getMessage());
+
+                errorList.setStyle("-fx-font-color: red"); // doesn't work! TODO
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: red");
+                }
+
+                varI.setStyle("-fx-background-color: red");
+            }
+        });
+
+        return go;
     }
 }
