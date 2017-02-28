@@ -9,13 +9,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.Main;
 
 /**
  * Created by zhenia on 27.02.17.
  */
 public class SimpleAlgoScene {
     public static Scene setScene(){
-        Text banner = new Text("Simple Banner"); // TODO place image
+        Text banner = new Text("Simple Banner");
 
         Text[] varBanners = new Text[3];
         varBanners[0] = new Text("a:");
@@ -35,6 +36,7 @@ public class SimpleAlgoScene {
 
         GridPane root = setLayout(banner, varBanners, vars, errorList, go);
 
+        Main.wndNum = 2;
 
         return new Scene(root, 500, 300);
     }
@@ -80,7 +82,7 @@ public class SimpleAlgoScene {
 
     private static void setListener(TextField var){
         var.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*|\\.")) var.setText(newValue.replaceAll("[^\\d^.]", ""));
+            if(!newValue.matches("\\d*|\\.|-")) var.setText(newValue.replaceAll("[^\\d^.^-]", ""));
         });
     }
 
@@ -125,8 +127,6 @@ public class SimpleAlgoScene {
                 modal.showAndWait();
             } catch (InvalidInputException | NumberFormatException e){
                 errorList.setText(e.getMessage());
-
-                errorList.setStyle("-fx-font-color: red"); // doesn't work! TODO
 
                 for (int i = 0; i < vars.length; i++) {
                     vars[i].setStyle("-fx-background-color: red");

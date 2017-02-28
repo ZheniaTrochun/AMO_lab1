@@ -34,6 +34,8 @@ public class MainScene {
 
         setButtons(simple, branched, cycled);
 
+        Main.wndNum = 1;
+
         return new Scene(root, 700, 500);
     }
 

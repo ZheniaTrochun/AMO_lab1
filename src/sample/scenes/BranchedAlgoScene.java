@@ -1,7 +1,6 @@
 package sample.scenes;
 
 import algos.BranchedAlgo;
-import algos.SimpleAlgo;
 import exceptions.InvalidInputException;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.Main;
 
 /**
  * Created by zhenia on 27.02.17.
@@ -35,7 +35,7 @@ public class BranchedAlgoScene {
         TextField varI = new TextField();
 
         varI.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*")) varI.setText(newValue.replaceAll("[^\\d]", ""));
+            if(!newValue.matches("\\d*|-")) varI.setText(newValue.replaceAll("[^\\d^-]", ""));
         });
 
         Text errorList = new Text();
@@ -43,6 +43,8 @@ public class BranchedAlgoScene {
         Button go = setButtonGo(vars, varI, errorList);
 
         GridPane root = setLayout(banner, varBanners, vars, varI, errorList, go);
+
+        Main.wndNum = 3;
 
         return new Scene(root, 500, 300);
     }
@@ -91,7 +93,7 @@ public class BranchedAlgoScene {
 
     private static void setListener(TextField var){
         var.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*|\\.")) var.setText(newValue.replaceAll("[^\\d^.]", ""));
+            if(!newValue.matches("\\d*|\\.|-")) var.setText(newValue.replaceAll("[^\\d^.^-]", ""));
         });
     }
 

@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.Main;
 
 /**
  * Created by zhenia on 27.02.17.
@@ -51,6 +52,8 @@ public class CycledAlgoScene {
         Button go = setButtonGo(vars,errorList);
 
         GridPane root = setLayout(banner, varBanners, vars, errorList, go);
+
+        Main.wndNum = 4;
 
         return new Scene(root, 500, 350);
     }
