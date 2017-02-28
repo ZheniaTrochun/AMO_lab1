@@ -14,6 +14,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.Main;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
 /**
  * Created by zhenia on 27.02.17.
  */
@@ -51,7 +56,11 @@ public class CycledAlgoScene {
 
         Button go = setButtonGo(vars,errorList);
 
+        Button getFromFile = setButtonGetFromFile(vars, errorList);
+
         GridPane root = setLayout(banner, varBanners, vars, errorList, go);
+
+        root.add(getFromFile, 2, 7);
 
         Main.wndNum = 4;
 
@@ -70,7 +79,7 @@ public class CycledAlgoScene {
 
         columns[2].setPercentWidth(40);
 
-        RowConstraints[] rows = new RowConstraints[9];
+        RowConstraints[] rows = new RowConstraints[10];
 
         for (int i = 0; i < rows.length; i++) {
             rows[i] = new RowConstraints();
@@ -88,7 +97,7 @@ public class CycledAlgoScene {
         }
 
         root.add(errorList, 2, 6);
-        root.add(go, 2, 7);
+        root.add(go, 2, 8);
 
         go.setPrefSize(200, 50);
 
@@ -139,7 +148,7 @@ public class CycledAlgoScene {
 
                 Double[] c = new Double[n];
 
-                String[] doubleNumStrArr = vars[3].getText().split(" ");
+                String[] doubleNumStrArr = vars[3].getText().trim().split(" ");
 
                 if(doubleNumStrArr.length < n) throw new InvalidInputException("Incorrect vector!");
 
@@ -172,5 +181,42 @@ public class CycledAlgoScene {
         });
 
         return go;
+    }
+
+    private static Button setButtonGetFromFile(TextField[] vars, Text errorList) {
+        Button get = new Button("Get from file");
+
+        get.setPrefSize(200, 50);
+
+        get.setOnAction(event -> {
+            try(Scanner sc = new Scanner(new File("/home/zhenia/IdeaProjects/amo_1.1/src/cycled.txt"))) {
+                errorList.setText("");
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: transparent");
+                    vars[i].setText("");
+                }
+
+                int n = sc.nextInt();
+
+                vars[0].setText(String.valueOf(n));
+
+                vars[1].setText(String.valueOf(sc.nextDouble()));
+                vars[2].setText(String.valueOf(sc.nextDouble()));
+
+                for (int i = 0; i < n; i++) {
+                    vars[3].setText(vars[3].getText() + " " + String.valueOf(sc.nextDouble()));
+                }
+
+            } catch (IOException | NoSuchElementException e) {
+                errorList.setText(e.getMessage());
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: red");
+                }
+            }
+        });
+
+        return get;
     }
 }

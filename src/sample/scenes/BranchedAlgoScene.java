@@ -13,6 +13,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.Main;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
 /**
  * Created by zhenia on 27.02.17.
  */
@@ -42,11 +47,15 @@ public class BranchedAlgoScene {
 
         Button go = setButtonGo(vars, varI, errorList);
 
+        Button getFromFile = setButtonGetFromFile(vars, varI, errorList);
+
         GridPane root = setLayout(banner, varBanners, vars, varI, errorList, go);
+
+        root.add(getFromFile, 2, 6);
 
         Main.wndNum = 3;
 
-        return new Scene(root, 500, 300);
+        return new Scene(root, 500, 350);
     }
 
     private static GridPane setLayout(Text banner, Text[] varBanners, TextField[] vars, TextField varI, Text errorList, Button go){
@@ -61,7 +70,7 @@ public class BranchedAlgoScene {
 
         columns[2].setPercentWidth(40);
 
-        RowConstraints[] rows = new RowConstraints[8];
+        RowConstraints[] rows = new RowConstraints[9];
 
         for (int i = 0; i < rows.length; i++) {
             rows[i] = new RowConstraints();
@@ -82,7 +91,7 @@ public class BranchedAlgoScene {
         root.add(varI, 2, 4);
 
         root.add(errorList, 2, 5);
-        root.add(go, 2, 6);
+        root.add(go, 2, 7);
 
         go.setPrefSize(200, 50);
 
@@ -156,5 +165,41 @@ public class BranchedAlgoScene {
         });
 
         return go;
+    }
+
+    private static Button setButtonGetFromFile(TextField[] vars, TextField varI, Text errorList) {
+        Button get = new Button("Get from file");
+
+        get.setPrefSize(200, 50);
+
+        get.setOnAction(event -> {
+            try(Scanner sc = new Scanner(new File("/home/zhenia/IdeaProjects/amo_1.1/src/branched.txt"))) {
+                errorList.setText("");
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: transparent");
+                    vars[i].setText("");
+                }
+
+                varI.setStyle("-fx-background-color: transparent");
+                varI.setText("");
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setText(String.valueOf(sc.nextDouble()));
+                }
+
+                varI.setText(String.valueOf(sc.nextInt()));
+
+            } catch (IOException | NoSuchElementException e) {
+                errorList.setText(e.getMessage());
+
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i].setStyle("-fx-background-color: red");
+                }
+                varI.setStyle("-fx-background-color: red");
+            }
+        });
+
+        return get;
     }
 }

@@ -19,14 +19,11 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(MainScene.setStartScene());
 
-        // TODO not working well
         stage.setOnCloseRequest(event -> {
             if(wndNum != 1){
-                stage.close();
                 stage.setScene(MainScene.setStartScene());
-                stage.show();
+                event.consume();
             }
-            else stage.close();
         });
 
         primaryStage.show();
